@@ -1,0 +1,167 @@
+/* ---------- GLOBAL ---------- */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f6fa;
+}
+
+.app-container {
+  padding: 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+/* ---------- CONTROLS ---------- */
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.search-input {
+  padding: 8px;
+  width: 250px;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn.secondary {
+  background-color: #6c757d;
+}
+
+/* ---------- TABLE ---------- */
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.product-table th,
+.product-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.product-table th {
+  background-color: #f0f0f0;
+}
+
+/* ---------- CARD VIEW ---------- */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  background: white;
+  border-radius: 6px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-card h4 {
+  margin-bottom: 6px;
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.status.active {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+.status.inactive {
+  background: #fdecea;
+  color: #b02a37;
+}
+
+/* ---------- MODAL ---------- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  padding: 16px;
+  width: 400px;
+  border-radius: 8px;
+}
+
+.modalClose {
+  float: right;
+  cursor: pointer;
+}
+
+/* ---------- FORM ---------- */
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 95%;
+  padding: 8px;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+
+.tag {
+  background: #e3f2fd;
+  color: #0d6efd;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+/* ---------- PAGINATION ---------- */
+
+.pagination {
+  padding: 10px;
+  margin: 15px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination button {
+  margin-right: 5px;
+  padding: 6px 10px;
+}
+
+.pagination > span {
+  padding: 15px 20px;
+  border: 1px solid gray;
+  cursor: pointer;
+}
+
+.pagination__disable {
+  opacity: 0;
+}
+
+.pagination__selected {
+  background-color: rgb(220, 220, 220);
+}

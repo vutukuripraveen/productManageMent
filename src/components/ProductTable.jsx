@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProductTable = ({ products, onEdit }) => {
+const ProductTable = ({ products, onEdit, onDelete }) => {
   return (
     <table className="product-table">
       <thead>
@@ -36,9 +36,12 @@ const ProductTable = ({ products, onEdit }) => {
                 {p.isActive ? 'Active' : 'Inactive'}
               </span>
             </td>
-            <td>
+            <td style={{ display: 'flex', gap: '8px' }}>
               <button className="btn secondary" onClick={() => onEdit(p)}>
                 Edit
+              </button>
+              <button className="btn third" onClick={() => onDelete(p)}>
+                Delete
               </button>
             </td>
           </tr>

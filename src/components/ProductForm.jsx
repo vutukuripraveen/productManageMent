@@ -26,6 +26,9 @@ const ProductForm = ({ product, onSave, onClose }) => {
     if (!form.name) err.name = 'Name required';
     if (!form.price) err.price = 'Price required';
     if (!form.category) err.category = 'Category required';
+    if (!form.stock) err.stock = 'Stock required';
+    if (!form.description) err.description = 'Description required';
+    if (!form.tags) err.tags = 'Tags required';
     return err;
   };
 
@@ -66,6 +69,9 @@ const ProductForm = ({ product, onSave, onClose }) => {
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
+        {errors['description'] && (
+          <div className="error">{errors['description']}</div>
+        )}
       </div>
 
       <div className="form-group">
@@ -74,6 +80,7 @@ const ProductForm = ({ product, onSave, onClose }) => {
           value={form.tags}
           onChange={(e) => setForm({ ...form, tags: e.target.value })}
         />
+        {errors['tags'] && <div className="error">{errors['tags']}</div>}
       </div>
       <div
         className="form-group"

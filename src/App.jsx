@@ -28,13 +28,24 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [itemsPerPage, setItemsPerPage] = useState(5);
-
-  const ITEMS_PER_PAGE = 7;
-
+  const [isActiveProduct, setIsActiveProduct] = useState('All');
   const debouncedSearch = useDebounce(search);
-  const filtered = products.filter((p) =>
-    p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
-  );
+
+  // Search and sort by date first
+  const filtered = products
+    .filter((p) => p.name.toLowerCase().includes(debouncedSearch.toLowerCase()))
+    ?.sort((a, b) => {
+      const timestampA = new Date(a?.createdAt);
+      const timestampB = new Date(b?.createdAt);
+      return timestampB > timestampA ? 1 : -1;
+    })
+    .filter((prod) =>
+      isActiveProduct === 'All'
+        ? true
+        : isActiveProduct === 'Active'
+        ? prod?.isActive
+        : isActiveProduct === 'InActive' && prod?.isActive === false
+    );
 
   const paginated = filtered.slice(
     (page - 1) * itemsPerPage,
@@ -78,6 +89,11 @@ function App() {
     setIsOpen(true);
   };
 
+  const onDeleteModal = (data) => {
+    setProducts((prev) => prev.filter((p) => p.id !== data.id));
+    setEditing(null);
+  };
+
   return (
     <div className="app-container">
       <h2>Product Management</h2>
@@ -88,7 +104,6 @@ function App() {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            marginBottom: '12px',
           }}
         >
           <label style={{ fontWeight: '500' }}>Items per page:</label>
@@ -118,7 +133,26 @@ function App() {
           className="btn"
           onClick={() => setView(view === 'list' ? 'card' : 'list')}
         >
-          Toggle View
+          Toggle {view === 'list' ? 'Card' : 'List'} View
+        </button>
+        <button
+          className="btn"
+          onClick={() => {
+            if (isActiveProduct === 'All') {
+              setIsActiveProduct('Active');
+            } else if (isActiveProduct === 'Active') {
+              setIsActiveProduct('InActive');
+            } else {
+              setIsActiveProduct('All');
+            }
+          }}
+        >
+          {isActiveProduct === 'All'
+            ? 'Active'
+            : isActiveProduct === 'Active'
+            ? 'InActive'
+            : 'All'}{' '}
+          Product
         </button>
         <button
           className="btn"
@@ -132,7 +166,11 @@ function App() {
       </div>
 
       {view === 'list' ? (
-        <ProductTable products={paginated} onEdit={openEditModal} />
+        <ProductTable
+          products={paginated}
+          onEdit={openEditModal}
+          onDelete={onDeleteModal}
+        />
       ) : (
         <ProductCard products={paginated} onEdit={openEditModal} />
       )}

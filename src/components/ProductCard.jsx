@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProductCard = ({ products, onEdit }) => {
+const ProductCard = ({ products, onEdit, onDelete }) => {
   return (
     <div className="card-grid">
       {products.map((p) => (
@@ -19,9 +19,14 @@ const ProductCard = ({ products, onEdit }) => {
           <p className={p.isActive ? 'status active' : 'status inactive'}>
             {p.isActive ? 'Active' : 'Inactive'}
           </p>
-          <button className="btn secondary" onClick={() => onEdit(p)}>
-            Edit
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button className="btn secondary" onClick={() => onEdit(p)}>
+              Edit
+            </button>
+            <button className="btn danger" onClick={() => onDelete(p)}>
+              Delete
+            </button>
+          </div>
         </div>
       ))}
     </div>

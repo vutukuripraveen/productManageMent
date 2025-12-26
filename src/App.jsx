@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Pagination from './components/Pagination';
 import ProductCard from './components/ProductCard';
 import ProductForm from './components/ProductForm';
@@ -20,6 +20,29 @@ function Modal({ children, onClose }) {
   );
 }
 
+function DeleteModal({ product, onConfirm, onCancel }) {
+  return (
+    <div className="modalOverlay">
+      <div className="modal">
+        <h3>Confirm Delete</h3>
+
+        <p>
+          Are you sure you want to delete <strong>{product.name}</strong>?
+        </p>
+
+        <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+          <button className="btn danger" onClick={onConfirm}>
+            Yes, Delete
+          </button>
+          <button className="btn secondary" onClick={onCancel}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [products, setProducts] = useState(initialProducts);
   const [view, setView] = useState('list');
@@ -27,25 +50,39 @@ function App() {
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   const [isActiveProduct, setIsActiveProduct] = useState('All');
+  const [deleteProduct, setDeleteProduct] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const debouncedSearch = useDebounce(search);
 
   // Search and sort by date first
-  const filtered = products
-    .filter((p) => p.name.toLowerCase().includes(debouncedSearch.toLowerCase()))
-    ?.sort((a, b) => {
-      const timestampA = new Date(a?.createdAt);
-      const timestampB = new Date(b?.createdAt);
-      return timestampB > timestampA ? 1 : -1;
-    })
-    .filter((prod) =>
-      isActiveProduct === 'All'
-        ? true
-        : isActiveProduct === 'Active'
-        ? prod?.isActive
-        : isActiveProduct === 'InActive' && prod?.isActive === false
+  const filtered = useMemo(() => {
+    if (!products || products.length === 0) return [];
+
+    return (
+      products
+        // Search filter
+        .filter((p) =>
+          p.name?.toLowerCase().includes(debouncedSearch.toLowerCase())
+        )
+
+        // Active / Inactive filter
+        .filter((prod) => {
+          if (isActiveProduct === 'All') return true;
+          if (isActiveProduct === 'Active') return prod.isActive === true;
+          if (isActiveProduct === 'InActive') return prod.isActive === false;
+          return true;
+        })
+
+        // Sort by createdAt (latest first)
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
     );
+  }, [products, debouncedSearch, isActiveProduct]);
 
   const paginated = filtered.slice(
     (page - 1) * itemsPerPage,
@@ -84,19 +121,28 @@ function App() {
     }
   };
 
+  const confirmDelete = () => {
+    setProducts((prev) => prev.filter((p) => p.id !== deleteProduct.id));
+
+    setDeleteProduct(null);
+    setShowSuccess(true);
+
+    // Auto-hide success after 2 seconds
+    setTimeout(() => setShowSuccess(false), 2000);
+  };
+
+  const onDeleteModal = (data) => {
+    setDeleteProduct(data);
+    setEditing(null);
+  };
+
   const openEditModal = (product) => {
     setEditing(product);
     setIsOpen(true);
   };
 
-  const onDeleteModal = (data) => {
-    setProducts((prev) => prev.filter((p) => p.id !== data.id));
-    setEditing(null);
-  };
-
-  return (
-    <div className="app-container">
-      <h2>Product Management</h2>
+  const filterFunction = () => {
+    return (
       <div className="controls">
         <SearchBar value={search} onChange={setSearch} />
         <div
@@ -164,24 +210,34 @@ function App() {
           Add Product
         </button>
       </div>
+    );
+  };
 
-      {view === 'list' ? (
+  return (
+    <div className="app-container">
+      <h2>Product Management</h2>
+      {filterFunction()}
+      {filtered.length === 0 ? (
+        <div className="no-data">No products found</div>
+      ) : view === 'list' ? (
         <ProductTable
           products={paginated}
           onEdit={openEditModal}
           onDelete={onDeleteModal}
         />
       ) : (
-        <ProductCard products={paginated} onEdit={openEditModal} />
+        <ProductCard
+          products={paginated}
+          onEdit={openEditModal}
+          onDelete={onDeleteModal}
+        />
       )}
-
       <Pagination
         totalItems={filtered.length}
         currentPage={page}
         setPage={setPage}
         itemsPerPage={itemsPerPage}
       />
-
       {isOpen && (
         <Modal onClose={() => setIsOpen(false)}>
           <ProductForm
@@ -190,6 +246,16 @@ function App() {
             onClose={() => setIsOpen(false)}
           />
         </Modal>
+      )}
+      {deleteProduct && (
+        <DeleteModal
+          product={deleteProduct}
+          onConfirm={confirmDelete}
+          onCancel={() => setDeleteProduct(null)}
+        />
+      )}
+      {showSuccess && (
+        <div className="success-toast">Product deleted successfully ✅</div>
       )}
     </div>
   );

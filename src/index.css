@@ -44,6 +44,28 @@ h2 {
   background-color: #f36;
 }
 
+.btn.danger {
+  background-color: #dc3545;
+}
+
+.success-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #e6f4ea;
+  color: #1e7e34;
+  padding: 10px 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-size: 14px;
+}
+
 /* ---------- TABLE ---------- */
 .product-table {
   width: 100%;
@@ -84,6 +106,7 @@ h2 {
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
+  width: max-content;
 }
 
 .status.active {

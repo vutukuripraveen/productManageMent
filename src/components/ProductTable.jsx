@@ -40,7 +40,7 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
               <button className="btn secondary" onClick={() => onEdit(p)}>
                 Edit
               </button>
-              <button className="btn third" onClick={() => onDelete(p)}>
+              <button className="btn danger" onClick={() => onDelete(p)}>
                 Delete
               </button>
             </td>
